@@ -7,12 +7,12 @@ import (
 )
 
 func Run() {
+	fmt.Println("Running Housing Bot...")
+
 	smsi, err := initTwilio()
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	// defer notifyUser(smsi, "Shutting down") // do later
 
 	err = notifyUser(smsi, "Watching for available housing...")
 	if err != nil {
@@ -25,7 +25,6 @@ func Run() {
 			log.Fatal(err)
 		}
 
-		time.Sleep(20 * time.Second)
-		fmt.Println("for loop iterated")
+		time.Sleep(3 * time.Minute)
 	}
 }
