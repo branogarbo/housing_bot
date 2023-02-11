@@ -7,7 +7,7 @@ import (
 )
 
 func Run() {
-	checkInterval := 10 * time.Second
+	checkInterval := 5 * time.Minute
 
 	fmt.Println("Running Housing Bot...")
 
