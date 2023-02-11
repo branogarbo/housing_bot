@@ -60,6 +60,20 @@ func checkHousingPage(s SMSI) error {
 	return nil
 }
 
+func handlePage(s SMSI, res *http.Response, pageHTML string) error {
+	var err error
+
+	if res.StatusCode == 302 {
+		err = authNeeded(s)
+	} else if res.StatusCode != 200 {
+		err = pageErrored(s)
+	} else {
+		err = checkPageHTML(s, pageHTML)
+	}
+
+	return err
+}
+
 func authNeeded(s SMSI) error {
 	return notifyUser(s, "Housing Bot needs reauthentication!")
 }
@@ -74,18 +88,4 @@ func checkPageHTML(s SMSI, resBody string) error {
 	}
 
 	return notifyUser(s, "Housing Bot found available housing!!!")
-}
-
-func handlePage(s SMSI, res *http.Response, pageHTML string) error {
-	var err error
-
-	if res.StatusCode == 302 {
-		err = authNeeded(s)
-	} else if res.StatusCode != 200 {
-		err = pageErrored(s)
-	} else {
-		err = checkPageHTML(s, pageHTML)
-	}
-
-	return err
 }
