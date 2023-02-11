@@ -87,5 +87,5 @@ func checkPageHTML(s SMSI, resBody string) error {
 		return notifyUser(s, "No housing found yet...")
 	}
 
-	return notifyUser(s, "Housing Bot found available housing!!!")
+	return notifyUser(s, "HOUSING IS AVAILABLE‼️‼️‼️")
 }
