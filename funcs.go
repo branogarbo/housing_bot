@@ -7,6 +7,8 @@ import (
 )
 
 func Run() {
+	checkInterval := 10 * time.Second
+
 	fmt.Println("Running Housing Bot...")
 
 	smsi, err := initTwilio()
@@ -25,6 +27,6 @@ func Run() {
 			log.Fatal(err)
 		}
 
-		time.Sleep(3 * time.Minute)
+		time.Sleep(checkInterval)
 	}
 }
