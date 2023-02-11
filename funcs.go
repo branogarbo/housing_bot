@@ -1,6 +1,10 @@
 package main
 
-import "log"
+import (
+	"fmt"
+	"log"
+	"time"
+)
 
 func Run() {
 	smsi, err := initTwilio()
@@ -8,8 +12,20 @@ func Run() {
 		log.Fatal(err)
 	}
 
-	err = notifyUser(smsi, "AYYYYYYYYY")
+	// defer notifyUser(smsi, "Shutting down") // do later
+
+	err = notifyUser(smsi, "Watching for available housing...")
 	if err != nil {
 		log.Fatal(err)
+	}
+
+	for {
+		err = checkHousingPage(smsi)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		time.Sleep(20 * time.Second)
+		fmt.Println("for loop iterated")
 	}
 }
