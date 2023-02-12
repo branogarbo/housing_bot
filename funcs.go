@@ -3,11 +3,18 @@ package main
 import (
 	"fmt"
 	"log"
+	"os"
+	"strconv"
 	"time"
 )
 
 func Run() {
-	checkInterval := 5 * time.Minute
+	minutes, err := strconv.Atoi(os.Getenv("CHECK_INTERVAL"))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	checkInterval := time.Duration(minutes) * time.Minute
 
 	fmt.Println("Running Housing Bot...")
 
