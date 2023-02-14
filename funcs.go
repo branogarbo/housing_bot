@@ -23,13 +23,13 @@ func Run() {
 		log.Fatal(err)
 	}
 
-	err = notifyUser(smsi, "Watching for available housing...")
+	err = smsi.notifyUser("Watching for available housing...")
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	for {
-		err = checkHousingPage(smsi)
+		err = smsi.checkHousingPage()
 		if err != nil {
 			log.Fatal(err)
 		}

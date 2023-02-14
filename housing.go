@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-func checkHousingPage(s SMSI) error {
+func (s SMSI) checkHousingPage() error {
 	pageURL := os.Getenv("PAGE_URL")
 	pageCookie := os.Getenv("PAGE_COOKIE")
 
@@ -40,7 +40,7 @@ func checkHousingPage(s SMSI) error {
 
 	pageHTML := string(resBody)
 
-	err = handlePage(s, res, pageHTML)
+	err = s.handlePage(res, pageHTML)
 	if err != nil {
 		return err
 	}
@@ -48,34 +48,34 @@ func checkHousingPage(s SMSI) error {
 	return nil
 }
 
-func handlePage(s SMSI, res *http.Response, pageHTML string) error {
+func (s SMSI) handlePage(res *http.Response, pageHTML string) error {
 	var err error
 
 	if res.StatusCode == 302 {
-		err = authNeeded(s)
+		err = s.authNeeded()
 	} else if res.StatusCode != 200 {
-		err = pageErrored(s)
+		err = s.pageErrored()
 	} else {
-		err = checkPageHTML(s, pageHTML)
+		err = s.checkPageHTML(pageHTML)
 	}
 
 	return err
 }
 
-func authNeeded(s SMSI) error {
-	return notifyUser(s, "Housing Bot needs reauthentication!")
+func (s SMSI) authNeeded() error {
+	return s.notifyUser("Housing Bot needs reauthentication!")
 }
 
-func pageErrored(s SMSI) error {
-	return notifyUser(s, "Housing Bot ran into a problem fetching the housing page!")
+func (s SMSI) pageErrored() error {
+	return s.notifyUser("Housing Bot ran into a problem fetching the housing page!")
 }
 
-func checkPageHTML(s SMSI, resBody string) error {
+func (s SMSI) checkPageHTML(resBody string) error {
 	if strings.Contains(resBody, "find any available rooms. Inventory is ever-changing, and as rooms become available, they will be displayed in the portal in real-time.") {
 		fmt.Println("No housing found yet...")
 
 		return nil
 	}
 
-	return notifyUser(s, "HOUSING IS AVAILABLE‼️‼️‼️")
+	return s.notifyUser("HOUSING IS AVAILABLE‼️‼️‼️")
 }

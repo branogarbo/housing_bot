@@ -26,7 +26,7 @@ func initTwilio() (SMSI, error) {
 	return SMSI{client, params}, nil
 }
 
-func notifyUser(s SMSI, message string) error {
+func (s SMSI) notifyUser(message string) error {
 	s.Params.SetBody(message)
 
 	fmt.Println(message)
