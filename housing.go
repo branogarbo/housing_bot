@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strconv"
 	"strings"
 )
 
@@ -67,7 +68,12 @@ func (s SMSI) pageErrored() error {
 }
 
 func (s SMSI) checkPageHTML(resBody string) error {
-	if strings.Contains(resBody, htmlPattern) {
+	alertWhenFound, err := strconv.ParseBool(alertWhenFound)
+	if err != nil {
+		return err
+	}
+
+	if strings.Contains(resBody, htmlPattern) && !alertWhenFound {
 		fmt.Println("No housing found yet...")
 
 		return nil
