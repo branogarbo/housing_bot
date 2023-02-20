@@ -2,21 +2,15 @@ package main
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/twilio/twilio-go"
 	twilioAPI "github.com/twilio/twilio-go/rest/api/v2010"
 )
 
 func initTwilio() (SMSI, error) {
-	accountSID := os.Getenv("ACCOUNT_SID")
-	authToken := os.Getenv("AUTH_TOKEN")
-	twilioPhone := os.Getenv("TWILIO_PHONE")
-	destPhone := os.Getenv("DEST_PHONE")
-
 	client := twilio.NewRestClientWithParams(twilio.ClientParams{
 		Username: accountSID,
-		Password: authToken,
+		Password: twilioToken,
 	})
 
 	params := &twilioAPI.CreateMessageParams{}

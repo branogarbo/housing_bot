@@ -4,14 +4,10 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"os"
 	"strings"
 )
 
 func (s SMSI) checkHousingPage() error {
-	pageURL := os.Getenv("PAGE_URL")
-	pageCookie := os.Getenv("PAGE_COOKIE")
-
 	client := &http.Client{
 		CheckRedirect: func(req *http.Request, via []*http.Request) error {
 			return http.ErrUseLastResponse
@@ -71,7 +67,7 @@ func (s SMSI) pageErrored() error {
 }
 
 func (s SMSI) checkPageHTML(resBody string) error {
-	if strings.Contains(resBody, "find any available rooms. Inventory is ever-changing, and as rooms become available, they will be displayed in the portal in real-time.") {
+	if strings.Contains(resBody, htmlPattern) {
 		fmt.Println("No housing found yet...")
 
 		return nil

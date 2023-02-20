@@ -3,13 +3,12 @@ package main
 import (
 	"fmt"
 	"log"
-	"os"
 	"strconv"
 	"time"
 )
 
 func Run() {
-	minutes, err := strconv.Atoi(os.Getenv("CHECK_INTERVAL"))
+	minutes, err := strconv.Atoi(checkInterval)
 	if err != nil {
 		log.Fatal(err)
 	}
