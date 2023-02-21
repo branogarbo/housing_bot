@@ -42,7 +42,7 @@ func Run() {
 
 func printToLog(msg string) error {
 	t := time.Now()
-	loc, err := time.LoadLocation("America/Phoenix")
+	loc, err := time.LoadLocation(timezone)
 	if err != nil {
 		return err
 	}

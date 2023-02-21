@@ -12,6 +12,7 @@ var (
 	checkInterval  = os.Getenv("CHECK_INTERVAL")
 	htmlPattern    = os.Getenv("HTML_PATTERN")
 	alertWhenFound = os.Getenv("ALERT_WHEN_FOUND")
+	timezone       = os.Getenv("TIMEZONE")
 )
 
 func main() {
