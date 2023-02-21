@@ -51,7 +51,7 @@ func (s SMSI) handlePage(res *http.Response, pageHTML string) error {
 	if res.StatusCode == 302 {
 		err = s.authNeeded()
 	} else if res.StatusCode != 200 {
-		err = s.pageErrored()
+		err = s.pageErrored(res)
 	} else {
 		err = s.checkPageHTML(pageHTML)
 	}
@@ -63,8 +63,8 @@ func (s SMSI) authNeeded() error {
 	return s.notifyUser("Housing Bot needs reauthentication!")
 }
 
-func (s SMSI) pageErrored() error {
-	return s.notifyUser("Housing Bot ran into a problem fetching the housing page!")
+func (s SMSI) pageErrored(res *http.Response) error {
+	return s.notifyUser("Housing Bot ran into a problem fetching the housing page! Got a status of " + res.Status)
 }
 
 func (s SMSI) checkPageHTML(resBody string) error {
