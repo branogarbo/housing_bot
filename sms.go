@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"log"
 
 	"github.com/twilio/twilio-go"
 	twilioAPI "github.com/twilio/twilio-go/rest/api/v2010"
@@ -23,9 +23,12 @@ func initTwilio() (SMSI, error) {
 func (s SMSI) notifyUser(message string) error {
 	s.Params.SetBody(message)
 
-	fmt.Println(message)
+	err := printToLog(message)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	_, err := s.Client.Api.CreateMessage(s.Params)
+	_, err = s.Client.Api.CreateMessage(s.Params)
 	if err != nil {
 		return err
 	}

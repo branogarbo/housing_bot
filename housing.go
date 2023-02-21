@@ -1,8 +1,8 @@
 package main
 
 import (
-	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -74,7 +74,10 @@ func (s SMSI) checkPageHTML(resBody string) error {
 	}
 
 	if strings.Contains(resBody, htmlPattern) && !alertWhenFound {
-		fmt.Println("No housing found yet...")
+		err = printToLog("No housing found yet...")
+		if err != nil {
+			log.Fatal(err)
+		}
 
 		return nil
 	}

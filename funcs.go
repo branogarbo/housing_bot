@@ -15,7 +15,10 @@ func Run() {
 
 	checkInterval := time.Duration(minutes) * time.Minute
 
-	fmt.Println("Running Housing Bot...")
+	err = printToLog("Running Housing Bot...")
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	smsi, err := initTwilio()
 	if err != nil {
@@ -35,4 +38,18 @@ func Run() {
 
 		time.Sleep(checkInterval)
 	}
+}
+
+func printToLog(msg string) error {
+	t := time.Now()
+	loc, err := time.LoadLocation("America/Phoenix")
+	if err != nil {
+		return err
+	}
+
+	entry := fmt.Sprintf("%s - (%s)", msg, t.In(loc))
+
+	fmt.Println(entry)
+
+	return nil
 }
