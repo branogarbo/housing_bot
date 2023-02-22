@@ -31,10 +31,12 @@ func Run() {
 	}
 
 	for {
-		err = smsi.checkHousingPage()
-		if err != nil {
-			log.Fatal(err)
-		}
+		go func() {
+			err := smsi.checkHousingPage()
+			if err != nil {
+				log.Fatal(err)
+			}
+		}()
 
 		time.Sleep(checkInterval)
 	}
