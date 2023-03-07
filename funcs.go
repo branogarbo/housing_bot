@@ -8,12 +8,12 @@ import (
 )
 
 func Run() {
-	minutes, err := strconv.Atoi(checkInterval)
+	minutes, err := strconv.Atoi(checkIntervalStr)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	checkInterval := time.Duration(minutes) * time.Minute
+	checkInterval = time.Duration(minutes) * time.Minute
 
 	err = printToLog("Running Housing Bot...")
 	if err != nil {
@@ -31,16 +31,7 @@ func Run() {
 		log.Fatal(err)
 	}
 
-	for {
-		go func() {
-			err := dg.checkHousingPage()
-			if err != nil {
-				log.Fatal(err)
-			}
-		}()
-
-		time.Sleep(checkInterval)
-	}
+	dg.startCheckingLoop()
 }
 
 func printToLog(msg string) error {
@@ -55,4 +46,19 @@ func printToLog(msg string) error {
 	fmt.Println(entry)
 
 	return nil
+}
+
+func (b Bot) startCheckingLoop() {
+	for {
+		if isChecking {
+			go func() {
+				err := b.checkHousingPage(false)
+				if err != nil {
+					log.Fatal(err)
+				}
+			}()
+		}
+
+		time.Sleep(checkInterval)
+	}
 }

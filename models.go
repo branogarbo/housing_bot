@@ -2,6 +2,6 @@ package main
 
 import "github.com/bwmarrin/discordgo"
 
-type Discord struct {
+type Bot struct {
 	Session *discordgo.Session
 }

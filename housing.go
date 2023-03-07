@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-func (d Discord) checkHousingPage() error {
+func (b Bot) checkHousingPage(printNoHouse bool) error {
 	client := &http.Client{
 		CheckRedirect: func(req *http.Request, via []*http.Request) error {
 			return http.ErrUseLastResponse
@@ -37,7 +37,7 @@ func (d Discord) checkHousingPage() error {
 
 	pageHTML := string(resBody)
 
-	err = d.handlePage(res, pageHTML)
+	err = b.handlePage(res, pageHTML, printNoHouse)
 	if err != nil {
 		return err
 	}
@@ -45,29 +45,29 @@ func (d Discord) checkHousingPage() error {
 	return nil
 }
 
-func (d Discord) handlePage(res *http.Response, pageHTML string) error {
+func (b Bot) handlePage(res *http.Response, pageHTML string, printNoHouse bool) error {
 	var err error
 
 	if res.StatusCode == 302 {
-		err = d.authNeeded()
+		err = b.authNeeded()
 	} else if res.StatusCode != 200 {
-		err = d.pageErrored(res)
+		err = b.pageErrored(res)
 	} else {
-		err = d.checkPageHTML(pageHTML)
+		err = b.checkPageHTML(pageHTML, printNoHouse)
 	}
 
 	return err
 }
 
-func (d Discord) authNeeded() error {
-	return d.notifyUser("Housing Bot needs reauthentication!")
+func (b Bot) authNeeded() error {
+	return b.notifyUser("Housing Bot needs reauthentication!")
 }
 
-func (d Discord) pageErrored(res *http.Response) error {
-	return d.notifyUser("Housing Bot ran into a problem fetching the housing page! Got a status of " + res.Status)
+func (b Bot) pageErrored(res *http.Response) error {
+	return b.notifyUser("Housing Bot ran into a problem fetching the housing page! Got a status of " + res.Status)
 }
 
-func (d Discord) checkPageHTML(resBody string) error {
+func (b Bot) checkPageHTML(resBody string, printNoHouse bool) error {
 	alertWhenFound, err := strconv.ParseBool(alertWhenFound)
 	if err != nil {
 		return err
@@ -79,8 +79,15 @@ func (d Discord) checkPageHTML(resBody string) error {
 			log.Fatal(err)
 		}
 
+		if printNoHouse {
+			_, err = b.Session.ChannelMessageSend(channelID, "No housing found yet...")
+			if err != nil {
+				log.Fatal(err)
+			}
+		}
+
 		return nil
 	}
 
-	return d.notifyUser("HOUSING IS AVAILABLE‼️‼️‼️")
+	return b.notifyUser("HOUSING IS AVAILABLE‼️‼️‼️")
 }
