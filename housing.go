@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-func (s SMSI) checkHousingPage() error {
+func (d Discord) checkHousingPage() error {
 	client := &http.Client{
 		CheckRedirect: func(req *http.Request, via []*http.Request) error {
 			return http.ErrUseLastResponse
@@ -37,7 +37,7 @@ func (s SMSI) checkHousingPage() error {
 
 	pageHTML := string(resBody)
 
-	err = s.handlePage(res, pageHTML)
+	err = d.handlePage(res, pageHTML)
 	if err != nil {
 		return err
 	}
@@ -45,29 +45,29 @@ func (s SMSI) checkHousingPage() error {
 	return nil
 }
 
-func (s SMSI) handlePage(res *http.Response, pageHTML string) error {
+func (d Discord) handlePage(res *http.Response, pageHTML string) error {
 	var err error
 
 	if res.StatusCode == 302 {
-		err = s.authNeeded()
+		err = d.authNeeded()
 	} else if res.StatusCode != 200 {
-		err = s.pageErrored(res)
+		err = d.pageErrored(res)
 	} else {
-		err = s.checkPageHTML(pageHTML)
+		err = d.checkPageHTML(pageHTML)
 	}
 
 	return err
 }
 
-func (s SMSI) authNeeded() error {
-	return s.notifyUser("Housing Bot needs reauthentication!")
+func (d Discord) authNeeded() error {
+	return d.notifyUser("Housing Bot needs reauthentication!")
 }
 
-func (s SMSI) pageErrored(res *http.Response) error {
-	return s.notifyUser("Housing Bot ran into a problem fetching the housing page! Got a status of " + res.Status)
+func (d Discord) pageErrored(res *http.Response) error {
+	return d.notifyUser("Housing Bot ran into a problem fetching the housing page! Got a status of " + res.Status)
 }
 
-func (s SMSI) checkPageHTML(resBody string) error {
+func (d Discord) checkPageHTML(resBody string) error {
 	alertWhenFound, err := strconv.ParseBool(alertWhenFound)
 	if err != nil {
 		return err
@@ -82,5 +82,5 @@ func (s SMSI) checkPageHTML(resBody string) error {
 		return nil
 	}
 
-	return s.notifyUser("HOUSING IS AVAILABLE‼️‼️‼️")
+	return d.notifyUser("HOUSING IS AVAILABLE‼️‼️‼️")
 }

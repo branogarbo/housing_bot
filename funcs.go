@@ -20,19 +20,20 @@ func Run() {
 		log.Fatal(err)
 	}
 
-	smsi, err := initTwilio()
+	dg, err := initDiscord()
 	if err != nil {
 		log.Fatal(err)
 	}
+	defer dg.Session.Close()
 
-	err = smsi.notifyUser("Watching for available housing...")
+	err = dg.notifyUser("Watching for available housing...")
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	for {
 		go func() {
-			err := smsi.checkHousingPage()
+			err := dg.checkHousingPage()
 			if err != nil {
 				log.Fatal(err)
 			}

@@ -1,11 +1,7 @@
 package main
 
-import (
-	"github.com/twilio/twilio-go"
-	twilioAPI "github.com/twilio/twilio-go/rest/api/v2010"
-)
+import "github.com/bwmarrin/discordgo"
 
-type SMSI struct {
-	Client *twilio.RestClient
-	Params *twilioAPI.CreateMessageParams
+type Discord struct {
+	Session *discordgo.Session
 }
