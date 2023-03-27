@@ -64,7 +64,7 @@ func (b Bot) authNeeded() error {
 }
 
 func (b Bot) pageErrored(res *http.Response) error {
-	return b.notifyUser("Housing Bot ran into a problem fetching the housing page! Got a status of " + res.Status)
+	return b.notifyUser("Housing Bot ran into a problem! Got a status of " + res.Status + ". Please check housing manually! " + pageURL)
 }
 
 func (b Bot) checkPageHTML(resBody string, printNoHouse bool) error {
@@ -89,5 +89,5 @@ func (b Bot) checkPageHTML(resBody string, printNoHouse bool) error {
 		return nil
 	}
 
-	return b.notifyUser("HOUSING IS AVAILABLE‼️‼️‼️")
+	return b.notifyUser("HOUSING IS AVAILABLE‼️‼️‼️ " + pageURL)
 }
