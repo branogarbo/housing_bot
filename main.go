@@ -17,9 +17,10 @@ var (
 )
 
 var (
-	checkInterval time.Duration
-	possibleCmds  = []string{"check", "help", "stop", "start"}
-	isChecking    = true
+	checkInterval    time.Duration
+	possibleCmds     = []string{"check", "help", "stop", "start"}
+	isChecking       = true
+	lastHTMLResponse = "No response yet"
 )
 
 func main() {

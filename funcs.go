@@ -31,6 +31,10 @@ func Run() {
 		log.Fatal(err)
 	}
 
+	go func() {
+		serveLastHTMLResponse()
+	}()
+
 	dg.startCheckingLoop()
 }
 

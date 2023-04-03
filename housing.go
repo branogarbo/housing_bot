@@ -51,6 +51,7 @@ func (b Bot) handlePage(res *http.Response, pageHTML string, printNoHouse bool) 
 	if res.StatusCode == 302 {
 		err = b.authNeeded()
 	} else if res.StatusCode != 200 {
+		lastHTMLResponse = pageHTML
 		err = b.pageErrored(res)
 	} else {
 		err = b.checkPageHTML(pageHTML, printNoHouse)
@@ -88,6 +89,8 @@ func (b Bot) checkPageHTML(resBody string, printNoHouse bool) error {
 
 		return nil
 	}
+
+	lastHTMLResponse = resBody
 
 	return b.notifyUser("HOUSING IS AVAILABLE‼️‼️‼️ " + pageURL)
 }
