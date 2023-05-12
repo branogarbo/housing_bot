@@ -32,7 +32,7 @@ func Run() {
 	}
 
 	go func() {
-		serveLastHTMLResponse()
+		serveLastResponse()
 	}()
 
 	dg.startCheckingLoop()
@@ -56,7 +56,7 @@ func (b Bot) startCheckingLoop() {
 	for {
 		if isChecking {
 			go func() {
-				err := b.checkHousingPage(false)
+				err := b.checkAddress(false)
 				if err != nil {
 					log.Fatal(err)
 				}

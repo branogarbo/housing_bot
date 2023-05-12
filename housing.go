@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-func (b Bot) checkHousingPage(printNoHouse bool) error {
+func (b Bot) checkAddress(printNoHouse bool) error {
 	client := &http.Client{
 		CheckRedirect: func(req *http.Request, via []*http.Request) error {
 			return http.ErrUseLastResponse
@@ -60,9 +60,9 @@ func (b Bot) handlePage(res *http.Response, resData string, printNoHouse bool) e
 	if res.StatusCode == 302 {
 		err = b.authNeeded()
 	} else if res.StatusCode != 200 {
-		err = b.pageErrored(res)
+		err = b.requestErrored(res)
 	} else {
-		err = b.checkPageHTML(resData, printNoHouse)
+		err = b.checkResponseBody(resData, printNoHouse)
 	}
 
 	return err
@@ -72,11 +72,11 @@ func (b Bot) authNeeded() error {
 	return b.notifyUser("Housing Bot needs reauthentication!")
 }
 
-func (b Bot) pageErrored(res *http.Response) error {
+func (b Bot) requestErrored(res *http.Response) error {
 	return b.notifyUser("Housing Bot ran into a problem! Got a status of " + res.Status + ". Please check housing manually! " + linkPage)
 }
 
-func (b Bot) checkPageHTML(resBody string, printNoHouse bool) error {
+func (b Bot) checkResponseBody(resBody string, printNoHouse bool) error {
 	if strings.Contains(resBody, searchPattern) && !alertWhenFound {
 		err := printToLog("No housing found yet...")
 		if err != nil {

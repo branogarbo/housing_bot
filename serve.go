@@ -6,7 +6,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func serveLastHTMLResponse() {
+func serveLastResponse() {
 	s := fiber.New(fiber.Config{
 		DisableStartupMessage: true,
 	})

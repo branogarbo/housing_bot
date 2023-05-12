@@ -43,7 +43,7 @@ func (b Bot) onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 	switch msg {
 	case "check":
-		err := b.checkHousingPage(true)
+		err := b.checkAddress(true)
 		if err != nil {
 			log.Fatal(err)
 		}
