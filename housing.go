@@ -1,10 +1,10 @@
 package main
 
 import (
+	"bytes"
 	"io"
 	"log"
 	"net/http"
-	"strconv"
 	"strings"
 )
 
@@ -15,7 +15,7 @@ func (b Bot) checkHousingPage(printNoHouse bool) error {
 		},
 	}
 
-	req, err := http.NewRequest("GET", pageURL, nil)
+	req, err := http.NewRequest(reqMethod, reqURL, bytes.NewBufferString(reqBody))
 	if err != nil {
 		return err
 	}
@@ -24,6 +24,14 @@ func (b Bot) checkHousingPage(printNoHouse bool) error {
 	req.Header.Set("pragma", "no-cache")
 	req.Header.Set("cookie", pageCookie)
 	req.Header.Set("upgrade-insecure-requests", "1")
+
+	if reqVerificationToken != "" {
+		req.Header.Set("__requestverificationtoken", reqVerificationToken)
+	}
+
+	if isAPIendpoint {
+		req.Header.Set("content-type", "application/json; charset=UTF-8")
+	}
 
 	res, err := client.Do(req)
 	if err != nil {
@@ -35,9 +43,9 @@ func (b Bot) checkHousingPage(printNoHouse bool) error {
 		return err
 	}
 
-	pageHTML := string(resBody)
+	resData := string(resBody)
 
-	err = b.handlePage(res, pageHTML, printNoHouse)
+	err = b.handlePage(res, resData, printNoHouse)
 	if err != nil {
 		return err
 	}
@@ -45,16 +53,16 @@ func (b Bot) checkHousingPage(printNoHouse bool) error {
 	return nil
 }
 
-func (b Bot) handlePage(res *http.Response, pageHTML string, printNoHouse bool) error {
+func (b Bot) handlePage(res *http.Response, resData string, printNoHouse bool) error {
 	var err error
+	lastResponse = resData
 
 	if res.StatusCode == 302 {
 		err = b.authNeeded()
 	} else if res.StatusCode != 200 {
-		lastHTMLResponse = pageHTML
 		err = b.pageErrored(res)
 	} else {
-		err = b.checkPageHTML(pageHTML, printNoHouse)
+		err = b.checkPageHTML(resData, printNoHouse)
 	}
 
 	return err
@@ -65,17 +73,12 @@ func (b Bot) authNeeded() error {
 }
 
 func (b Bot) pageErrored(res *http.Response) error {
-	return b.notifyUser("Housing Bot ran into a problem! Got a status of " + res.Status + ". Please check housing manually! " + pageURL)
+	return b.notifyUser("Housing Bot ran into a problem! Got a status of " + res.Status + ". Please check housing manually! " + linkPage)
 }
 
 func (b Bot) checkPageHTML(resBody string, printNoHouse bool) error {
-	alertWhenFound, err := strconv.ParseBool(alertWhenFound)
-	if err != nil {
-		return err
-	}
-
-	if strings.Contains(resBody, htmlPattern) && !alertWhenFound {
-		err = printToLog("No housing found yet...")
+	if strings.Contains(resBody, searchPattern) && !alertWhenFound {
+		err := printToLog("No housing found yet...")
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -90,7 +93,5 @@ func (b Bot) checkPageHTML(resBody string, printNoHouse bool) error {
 		return nil
 	}
 
-	lastHTMLResponse = resBody
-
-	return b.notifyUser("HOUSING IS AVAILABLE‼️‼️‼️ " + pageURL)
+	return b.notifyUser("HOUSING IS AVAILABLE‼️‼️‼️ " + linkPage)
 }
