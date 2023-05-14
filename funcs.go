@@ -32,7 +32,7 @@ func Run() {
 	}
 
 	go func() {
-		serveLastResponse()
+		dg.initFiber()
 	}()
 
 	dg.startCheckingLoop()
