@@ -22,7 +22,7 @@ func (b Bot) checkAddress(printNoHouse bool) error {
 
 	req.Header.Set("cache-control", "no-cache")
 	req.Header.Set("pragma", "no-cache")
-	req.Header.Set("cookie", pageCookie)
+	req.Header.Set("cookie", reqCookies)
 	req.Header.Set("upgrade-insecure-requests", "1")
 
 	if reqVerificationToken != "" {

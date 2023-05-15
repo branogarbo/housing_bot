@@ -8,7 +8,7 @@ import (
 
 var (
 	reqURL               = os.Getenv("REQ_URL")
-	pageCookie           = os.Getenv("PAGE_COOKIE")
+	reqCookies           = os.Getenv("REQ_COOKIES")
 	discordToken         = os.Getenv("DISCORD_TOKEN")
 	channelID            = os.Getenv("CHANNEL_ID")
 	checkIntervalStr     = os.Getenv("CHECK_INTERVAL")
