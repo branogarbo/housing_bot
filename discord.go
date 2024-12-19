@@ -94,7 +94,7 @@ func (b Bot) notifyUser(message string) error {
 func (b Bot) printPossibleCmds() error {
 	msg := "Possible commands:\n"
 	for _, cmd := range possibleCmds {
-		msg += "\t- " + cmd + "\n"
+		msg += "- " + cmd + "\n"
 	}
 
 	_, err := b.Session.ChannelMessageSend(channelID, msg)

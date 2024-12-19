@@ -8,7 +8,7 @@ import (
 	"regexp"
 )
 
-func (b Bot) checkAddress(printNoHouse bool) error {
+func (b Bot) checkAddress(printNoMatch bool) error {
 	client := &http.Client{
 		CheckRedirect: func(req *http.Request, via []*http.Request) error {
 			return http.ErrUseLastResponse
@@ -38,7 +38,7 @@ func (b Bot) checkAddress(printNoHouse bool) error {
 
 	resData := string(resBody)
 
-	err = b.handlePage(res, resData, printNoHouse)
+	err = b.handlePage(res, resData, printNoMatch)
 	if err != nil {
 		return err
 	}
@@ -46,7 +46,7 @@ func (b Bot) checkAddress(printNoHouse bool) error {
 	return nil
 }
 
-func (b Bot) handlePage(res *http.Response, resData string, printNoHouse bool) error {
+func (b Bot) handlePage(res *http.Response, resData string, printNoMatch bool) error {
 	var err error
 	lastResponse = resData
 
@@ -55,7 +55,7 @@ func (b Bot) handlePage(res *http.Response, resData string, printNoHouse bool) e
 	} else if res.StatusCode != 200 {
 		err = b.requestErrored(res)
 	} else {
-		err = b.checkResponseBody(resData, printNoHouse)
+		err = b.checkResponseBody(resData, printNoMatch)
 	}
 
 	return err
@@ -69,7 +69,7 @@ func (b Bot) requestErrored(res *http.Response) error {
 	return b.notifyUser("Bot ran into a problem! Got a status of " + res.Status + ". Please check manually! " + linkPage)
 }
 
-func (b Bot) checkResponseBody(resBody string, printNoHouse bool) error {
+func (b Bot) checkResponseBody(resBody string, printNoMatch bool) error {
   re := regexp.MustCompile(searchPattern)
 
   if re.MatchString(resBody) && !alertWhenFound {
@@ -78,7 +78,7 @@ func (b Bot) checkResponseBody(resBody string, printNoHouse bool) error {
 			log.Fatal(err)
 		}
 
-		if printNoHouse {
+		if printNoMatch {
 			_, err = b.Session.ChannelMessageSend(channelID, "Nothing found yet...")
 			if err != nil {
 				log.Fatal(err)

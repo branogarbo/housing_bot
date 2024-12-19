@@ -14,4 +14,4 @@ COPY --from=builder /go/bin/app /app
 ADD https://github.com/golang/go/raw/master/lib/time/zoneinfo.zip /zoneinfo.zip
 ENV ZONEINFO /zoneinfo.zip
 ENTRYPOINT /app
-LABEL Name=housingbot Version=0.0.1
+LABEL Name=web_checker Version=0.0.1
