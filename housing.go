@@ -5,7 +5,7 @@ import (
 	"io"
 	"log"
 	"net/http"
-	"strings"
+	"regexp"
 )
 
 func (b Bot) checkAddress(printNoHouse bool) error {
@@ -15,23 +15,16 @@ func (b Bot) checkAddress(printNoHouse bool) error {
 		},
 	}
 
-	req, err := http.NewRequest(reqMethod, reqURL, bytes.NewBufferString(reqBody))
+  reqOpts := parseCurlCmd(curlCmd)
+
+	req, err := http.NewRequest(reqOpts.Method, reqOpts.URL, bytes.NewBufferString(reqOpts.Body)) 
 	if err != nil {
 		return err
 	}
 
-	req.Header.Set("cache-control", "no-cache")
-	req.Header.Set("pragma", "no-cache")
-	req.Header.Set("cookie", reqCookies)
-	req.Header.Set("upgrade-insecure-requests", "1")
-
-	if reqVerificationToken != "" {
-		req.Header.Set("__requestverificationtoken", reqVerificationToken)
-	}
-
-	if isAPIendpoint {
-		req.Header.Set("content-type", "application/json; charset=UTF-8")
-	}
+  for k,v := range reqOpts.Headers {
+    req.Header.Set(k, v)
+  } 
 
 	res, err := client.Do(req)
 	if err != nil {
@@ -69,22 +62,24 @@ func (b Bot) handlePage(res *http.Response, resData string, printNoHouse bool) e
 }
 
 func (b Bot) authNeeded() error {
-	return b.notifyUser("Housing Bot needs reauthentication!")
+	return b.notifyUser("Bot needs reauthentication!")
 }
 
 func (b Bot) requestErrored(res *http.Response) error {
-	return b.notifyUser("Housing Bot ran into a problem! Got a status of " + res.Status + ". Please check housing manually! " + linkPage)
+	return b.notifyUser("Bot ran into a problem! Got a status of " + res.Status + ". Please check manually! " + linkPage)
 }
 
 func (b Bot) checkResponseBody(resBody string, printNoHouse bool) error {
-	if strings.Contains(resBody, searchPattern) && !alertWhenFound {
-		err := printToLog("No housing found yet...")
+  re := regexp.MustCompile(searchPattern)
+
+  if re.MatchString(resBody) && !alertWhenFound {
+		err := printToLog("Nothing found yet...")
 		if err != nil {
 			log.Fatal(err)
 		}
 
 		if printNoHouse {
-			_, err = b.Session.ChannelMessageSend(channelID, "No housing found yet...")
+			_, err = b.Session.ChannelMessageSend(channelID, "Nothing found yet...")
 			if err != nil {
 				log.Fatal(err)
 			}
@@ -93,5 +88,5 @@ func (b Bot) checkResponseBody(resBody string, printNoHouse bool) error {
 		return nil
 	}
 
-	return b.notifyUser("HOUSING IS AVAILABLE‼️‼️‼️ " + linkPage)
+	return b.notifyUser(foundMessage + "\n" + linkPage)
 }

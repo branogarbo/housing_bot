@@ -3,7 +3,9 @@ package main
 import (
 	"fmt"
 	"log"
+	"regexp"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -15,7 +17,7 @@ func Run() {
 
 	checkInterval = time.Duration(minutes) * time.Minute
 
-	err = printToLog("Running Housing Bot...")
+	err = printToLog("Running Bot...")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -26,7 +28,7 @@ func Run() {
 	}
 	defer dg.Session.Close()
 
-	err = dg.notifyUser("Watching for available housing...")
+	err = dg.notifyUser("Watching for pattern...")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -66,3 +68,31 @@ func (b Bot) startCheckingLoop() {
 		time.Sleep(checkInterval)
 	}
 }
+
+func parseCurlCmd(curlCmd string) HTTPoptions {
+  headers := map[string]string{}
+  opts := HTTPoptions{}
+
+  curlLines := strings.Split(curlCmd, `\`)
+  re := regexp.MustCompile(`([^\s]*) '(.*)'`)
+
+  for _, line := range curlLines {
+    match := re.FindStringSubmatch(line)
+  
+    switch match[1] {
+    case "curl":
+      opts.URL = match[2]
+    case "--data":
+      opts.Body = match[2]
+    case "-H":
+      headerSplit := strings.Split(match[2], ": ")
+      headers[headerSplit[0]] = headerSplit[1]
+    case "-X":
+      opts.Method = match[2]  
+    }
+  }
+
+  opts.Headers = headers
+  return opts
+}
+

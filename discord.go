@@ -54,17 +54,17 @@ func (b Bot) onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		}
 	case "stop":
 		if !isChecking {
-			b.notifyUser("Housing check is aleady stopped!")
+			b.notifyUser("Watching is aleady stopped!")
 		} else {
-			b.notifyUser("Stopping housing check...")
+			b.notifyUser("Unwatching...")
 			isChecking = false
 		}
 
 	case "start":
 		if isChecking {
-			b.notifyUser("Housing check is aleady running!")
+			b.notifyUser("Bot is already watching!")
 		} else {
-			b.notifyUser("Starting housing check...")
+			b.notifyUser("Watching...")
 			isChecking = true
 		}
 	default:
