@@ -88,5 +88,5 @@ func (b Bot) checkResponseBody(resBody string, printNoHouse bool) error {
 		return nil
 	}
 
-	return b.notifyUser(foundMessage + "\n" + linkPage)
+	return b.notifyUser(foundMessage + " " + linkPage)
 }
